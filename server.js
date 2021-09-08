@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
-const App = require("./models/App");
+const App = require("./models/AppModel");
 
 const publicKey = fs.readFileSync("./public.key", "utf8");
 
@@ -28,13 +28,14 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-  let { name, url } = req.body;
-
+  let { name, url, redirects, isDefault } = req.body;
   new App({
     name: name,
     url: url,
+    redirects: redirects,
+    isDefault: isDefault,
   }).save((err, app) => {
-    if (err) return res.status(500).send("app.save err");
+    if (err) return res.status(500).send("app.save err: " + err);
     res.send(app);
   });
 });
